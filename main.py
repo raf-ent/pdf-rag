@@ -39,7 +39,7 @@ qdrant_client = QdrantClient(
 )
 
 groq_api_key = os.getenv("GROQ_API_KEY")
-groq_chat = ChatGroq(temperature=0.5, groq_api_key=groq_api_key, model_name="llama3-70b-8192")
+groq_chat = ChatGroq(temperature=1, groq_api_key=groq_api_key, model_name="llama3-70b-8192")
 
 
 @app.post("/upload/")
@@ -91,32 +91,36 @@ class QueryRequest(BaseModel):
     collection_name: str
     query: str
 
-# Endpoint for querying the database and generating responses
 @app.post("/query/")
 async def query_database(request: QueryRequest):
+    
     query_embedding = cohere_client.embed(texts=[request.query]).embeddings[0]
-
-    search_result = qdrant_client.search(collection_name=request.collection_name, query_vector=query_embedding, limit=3)
+    
+    search_result = qdrant_client.search(
+        collection_name=request.collection_name,
+        query_vector=query_embedding,
+        limit=3
+    )
 
     context = ""
     for result in search_result:
         context += result.payload["text"] + "\n"
 
+    system_message = (
+        "You are a helpful AI assistant. Given relevant context, "
+        "answer concisely in Markdown format. Use proper formatting like newlines and backticks for code."
+    )
+    
+    human_message = f"### Question: {request.query}\n### Context: {context}\n### Answer:"
+
+    prompt = ChatPromptTemplate.from_messages([("system", system_message), ("human", human_message)])
+    chain = prompt | groq_chat
+
     async def response_generator():
-        system_message = "You are a question-answering assistant. You are given relevant context. Answer only in Markdown format. Use newlines, Use backticks for code. Do not mention markdown or code anywhere. Only answer what is asked and keep it concise."
-        human_message = f"""### Question: {request.query}
-        ### Context: {context}
-        !!! Remember to answer in markdown format
-        ### Answer:"""
-
-        prompt = ChatPromptTemplate.from_messages([("system", system_message), ("human", human_message)])
-        chain = prompt | groq_chat
-
         async for chunk in chain.astream({"text": human_message}):
             yield chunk.content
 
     return StreamingResponse(response_generator(), media_type="text/plain")
-
 
 if __name__ == "__main__":
     port = int(os.getenv('PORT', 8000)) 
