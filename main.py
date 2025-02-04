@@ -1,8 +1,5 @@
-#used for testing
-
 import os
 import shutil
-
 import cohere
 import uvicorn
 from dotenv import load_dotenv
@@ -29,7 +26,7 @@ app.add_middleware(
 
 load_dotenv()
 
-UPLOAD_DIR = os.getcwd()
+UPLOAD_DIR = os.getcwd() + "/uploads"
 
 cohere_api_key = os.getenv("COHERE_API_KEY")
 cohere_client = cohere.Client(cohere_api_key)
@@ -42,7 +39,7 @@ qdrant_client = QdrantClient(
 )
 
 groq_api_key = os.getenv("GROQ_API_KEY")
-groq_chat = ChatGroq(temperature=0.7, groq_api_key=groq_api_key, model_name="llama3-70b-8192")
+groq_chat = ChatGroq(temperature=0.5, groq_api_key=groq_api_key, model_name="llama3-70b-8192")
 
 
 @app.post("/upload/")
