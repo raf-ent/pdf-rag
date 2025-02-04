@@ -1,11 +1,29 @@
 import streamlit as st
 import requests
+import os
+import dotenv
 
-# Configuration
-BACKEND_URL = "http://127.0.0.1:8000"
+dotenv.load_dotenv()
+
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
 def main():
     st.set_page_config(page_title="PDF QA Assistant", page_icon="📚")
+
+    st.markdown("""
+    <style>
+        .stChatInput {
+            display: flex;
+            position: fixed;
+            align-items: center;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+    """, 
+    unsafe_allow_html=True)
+
     st.title("PDF QA Assistant")
 
     tab1, tab2 = st.tabs(["Upload PDF", "Ask Question"])
@@ -23,7 +41,7 @@ def main():
                     st.success("PDF processed successfully!")
                     collection_name = uploaded_file.name.split(".")[0]
                     st.session_state.collection_name = collection_name
-                    st.write(f"Collection name: `{collection_name}`")
+                    st.write(f"Document name: `{collection_name}`")
                 else:
                     st.error(f"Error processing PDF: {response.text}")
 
@@ -31,7 +49,7 @@ def main():
         st.header("Ask Questions")
         
         collection_name = st.text_input(
-            "Collection Name (from uploaded PDF)",
+            "Document Name",
             value=st.session_state.get("collection_name", ""),
             help="This should be the PDF filename"
         )
@@ -75,6 +93,7 @@ def main():
                                 full_response += chunk.decode("utf-8")
                                 response_placeholder.markdown(full_response + "▌")
                         response_placeholder.markdown(full_response)
+
                     else:
                         st.error(f"Error: {response.text}")
                         full_response = "Sorry, I couldn't process your question."
@@ -86,4 +105,5 @@ def main():
             st.session_state.messages.append({"role": "assistant", "content": full_response})
 
 if __name__ == "__main__":
+
     main()

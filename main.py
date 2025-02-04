@@ -39,8 +39,12 @@ qdrant_client = QdrantClient(
 )
 
 groq_api_key = os.getenv("GROQ_API_KEY")
-groq_chat = ChatGroq(temperature=1, groq_api_key=groq_api_key, model_name="llama3-70b-8192")
-
+groq_chat = ChatGroq(
+    temperature=0.8, 
+    groq_api_key=groq_api_key, 
+    model_name="mixtral-8x7b-32768", 
+    max_tokens = None
+)
 
 @app.post("/upload/")
 async def upload_pdf(pdf_file: UploadFile = File(...)):
@@ -101,6 +105,13 @@ async def query_database(request: QueryRequest):
         query_vector=query_embedding,
         limit=3
     )
+    query_chunks = request.query.split()
+
+    store_embeddings_in_qdrant(
+        collection_name=request.collection_name, 
+        text_chunks=query_chunks, 
+        embeddings=[query_embedding]
+    )
 
     context = ""
     for result in search_result:
@@ -111,7 +122,7 @@ async def query_database(request: QueryRequest):
         "answer concisely in Markdown format. Use proper formatting like newlines and backticks for code."
     )
     
-    human_message = f"### Question: {request.query}\n### Context: {context}\n### Answer:"
+    human_message = f"Question: {request.query}\n Context: {context}\n Answer:"
 
     prompt = ChatPromptTemplate.from_messages([("system", system_message), ("human", human_message)])
     chain = prompt | groq_chat
