@@ -79,8 +79,10 @@ streamlit run client.py
 ```http
 POST /upload/
 ```
+- **Description:** Uploads a PDF file, extracts its text, splits it into chunks, generates embeddings using Cohere, and stores them in Qdrant.
+
 **Request:**  
-- `pdf_file` (Multipart file upload)  
+- `pdf_file` (Multipart file upload) 
 
 **Response:**  
 ```json
@@ -95,6 +97,8 @@ POST /upload/
 ```http
 POST /query/
 ```
+- **Description:** Accepts a query, retrieves relevant content from Qdrant based on the query embedding, fetches previous query history, and streams a response using the Groq language model.
+
 **Request Body:**  
 ```json
 {
@@ -109,7 +113,5 @@ The document discusses ...
 ```
 
 
-## **📜 License**
-This project is licensed under the **MIT License**.
 
 ---
