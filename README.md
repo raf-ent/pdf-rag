@@ -47,6 +47,17 @@ QDRANT_API_KEY=your-qdrant-api-key
 PORT=8000
 ```
 
+### **Alternative for Qdrant API**
+Pull the Qdrant Docker Image
+   ```
+   docker pull qdrant/qdrant
+   ```
+   
+Run the Qdrant Docker Container:
+   ```
+   docker run -d --name qdrant -p 6333:6333 qdrant/qdrant
+   ```
+
 ---
 
 ## **▶ Running the App**
@@ -97,21 +108,6 @@ POST /query/
 The document discusses ...
 ```
 
----
-
-<!-- ## **🛠 Future Improvements**
-- 🔄 **Better memory storage** (Redis/PostgreSQL)
-- 📊 **UI enhancements** for Streamlit frontend
-- ⏩ **Faster response streaming** with async optimizations
-
----
-
-## **🙌 Contributors**
-- **Your Name** - *Backend Development*
-- **Your Team Member** - *Frontend Integration*
-- **Another Contributor** - *Vector Search Optimization*
-
---- -->
 
 ## **📜 License**
 This project is licensed under the **MIT License**.
