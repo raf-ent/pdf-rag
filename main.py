@@ -40,9 +40,9 @@ qdrant_client = QdrantClient(
 
 groq_api_key = os.getenv("GROQ_API_KEY")
 groq_chat = ChatGroq(
-    temperature=0.8, 
+    temperature=0.5, 
     groq_api_key=groq_api_key, 
-    model_name="mixtral-8x7b-32768", 
+    model_name="deepseek-r1-distill-llama-70b", 
     max_tokens = None
 )
 

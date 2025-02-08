@@ -5,13 +5,13 @@ This project is a **FastAPI-based** retrieval-augmented generator (RAG) service 
 ---
 
 ## **🚀 Features**
-- 📄 **Upload PDFs** and split them into smaller text chunks  
-- 🧠 **Embed text using Cohere's API** for efficient retrieval  
-- 📌 **Store embeddings in Qdrant** for vector-based search  
-- 🔍 **Query the stored data** to retrieve relevant document snippets  
-- 🗣 **Answer questions** using Groq's LLM with relevant context  
-- 🔄 **Stream responses in real-time** for an interactive experience  
-- 🏗 **Memory support** to remember past queries  
+- **Upload PDFs** and split them into smaller text chunks  
+- **Embed text using Cohere's API** for efficient retrieval  
+- **Store embeddings in Qdrant** for vector-based search  
+- **Query the stored data** to retrieve relevant document snippets  
+- **Answer questions** using Groq's LLM with relevant context  
+- **Stream responses in real-time** for an interactive experience  
+- **Memory support** to remember past queries  
 
 ---
 
